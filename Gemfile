@@ -20,8 +20,11 @@ end
 
 group :test do
   gem 'rspec-rails'
+  gem 'factory_girl_rails'
   gem 'shoulda-matchers'
+  gem 'timecop'
   gem 'faker'
+  gem 'database_cleaner'
   gem 'simplecov', require: false
 end
 
