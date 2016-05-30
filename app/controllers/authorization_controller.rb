@@ -19,6 +19,17 @@ class AuthorizationController < ApplicationController
     end
   end
 
+  def destroy
+    record = AuthKey.find_by(token: params[:id])
+    if record.present?
+      record.token = AuthKey.generate_authentication_token
+      record.save
+      render json: { success: true }, status: 200
+    else
+      render json: { success: false, errors: 'Could not find this user' }, status: 401
+    end
+  end
+
   def status(response)
     response ? 200 : 401
   end

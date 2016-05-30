@@ -55,4 +55,21 @@ describe AuthorizationController, type: :controller do
       expect(parsed_response).to eql expected_response
     end
   end
+
+  context 'destroy' do
+    it 'updates token' do
+      key = FactoryGirl.create :auth_key, token: 'token123'
+      delete :destroy, id: key.token
+      key.reload
+      expect(response.status).to eql 200
+      expect(key.token).to_not eql 'token123'
+    end
+
+    it 'returns proper errors' do
+      delete :destroy, id: 'token1234'
+      json_response = JSON.parse(response.body, symbolize_names: true)
+      expect(json_response).to have_key(:errors)
+      expect(response.status).to eql 401
+    end
+  end
 end

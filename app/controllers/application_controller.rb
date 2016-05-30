@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+
   # Public: generates the json response
   # obj - object that contains the data sent in a request
   # returns - data in json format
