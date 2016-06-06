@@ -72,4 +72,31 @@ describe AuthorizationController, type: :controller do
       expect(response.status).to eql 401
     end
   end
+  context '.current_user' do
+    it 'returns the id of the logged in user' do
+      key = FactoryGirl.create :auth_key, token: 'token123'
+      request.headers['Authorization'] = key.token
+      expected_response = {
+        'success' => true,
+        'data' => {
+          'id' => key.id
+        }
+      }
+      get :current_user
+      parsed_response = JSON.parse(response.body)
+      expect(response.status).to eql 200
+      expect(parsed_response).to eql expected_response
+    end
+
+    it 'returns 400 for invalid request' do
+      expected_response = {
+        'success' => false,
+        'errors' => 'Could not find this user'
+      }
+      get :current_user
+      parsed_response = JSON.parse(response.body)
+      expect(response.status).to eql 400
+      expect(parsed_response).to eql expected_response
+    end
+  end
 end

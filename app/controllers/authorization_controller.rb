@@ -1,9 +1,9 @@
 class AuthorizationController < ApplicationController
   include Authenticable
+  before_action :set_token
 
   def check_authorization
-    token = request.headers['Authorization']
-    response = Authenticable.validate_token(token)
+    response = Authenticable.validate_token(@token)
     render json: { success: response }, status: status(response)
   end
 
@@ -30,7 +30,21 @@ class AuthorizationController < ApplicationController
     end
   end
 
+  def current_user
+    user = Authenticable.current_user(@token)
+    if user
+      render json: { success: true, data: { id: user.id } }, status: 200
+    else
+      render json: { success: false, errors: 'Could not find this user' }, status: 400
+    end
+  end
+
   def status(response)
     response ? 200 : 401
+  end
+
+  private
+  def set_token
+    @token = request.headers['Authorization']
   end
 end

@@ -7,4 +7,8 @@ module Authenticable
     return false unless key.present?
     key['token_created_at'].to_date + 24.hours > Time.now if key['token_created_at'].present?
   end
+
+  def self.current_user(token)
+    key = AuthKey.find_by(token: token)
+  end
 end
